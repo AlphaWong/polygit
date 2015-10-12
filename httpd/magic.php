@@ -12,24 +12,10 @@ header("polygit-hello: hello");
 
 // use a memcache to memoize github API (version) data
 
-//if (defined('Memcache')) {
+$mem = new Memcache;
+$mem->connect('localhost', 11211) or die ("Could not connect");
 
-  $mem = new Memcache;
-  header("polygit-memcache: using memcache");
-
-/*
-} else {
-  header("polygit-memcache: NO memcache");
-  class cacheStub {
-      function get() {
-        return null;
-      }
-      function set() {
-      }
-  }
-  $mem = new cacheStub();
-}
-*/
+header("polygit-memcache: using memcache");
 
 // grab up the money bits of the url
 
@@ -113,6 +99,7 @@ if (!$ORG) {
 //
 
 if (@$VERSION{0} === '@') {
+
   $redir = str_replace(':', '/', substr($VERSION, 1));
 
   header("polygit-location: //$redir/$COMPONENT/$IMPORT");
@@ -127,8 +114,9 @@ if (@$VERSION{0} === '@') {
   //header("location: http://$redir/$COMPONENT/$IMPORT");
   //echo "polygit-location: http://$redir/$COMPONENT/$IMPORT";
   //exit(1);
-}
-else {
+
+} else {
+
   if (@$VERSION{0} === ':') {
     $BRANCH = substr($VERSION, 1);
     $info = github("repos/$ORG/$COMPONENT/git/refs/heads/$BRANCH");
@@ -158,18 +146,25 @@ else {
 
   // parse the response headers
   $res = parseHeaders($rawgit_response);
+
 }
 
 // handle 404
 if ($res['code'] == 404) {
+
   header($res[0]);
   echo "<!-- $ORG/$COMPONENT/$VERSION/$IMPORT -->\n";
+
 } else {
+
+  // good for at least an hour
+  header("cache-control: public, max-age=" . 60 * 60);
   // forward content-type
   $type = $res['Content-Type'];
   header("Content-Type: $type");
   // forward byte stream
   echo $data;
+
 }
 
 //

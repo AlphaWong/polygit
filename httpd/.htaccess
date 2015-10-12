@@ -1,0 +1,6 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteRule ^$ usage.php [L]
+RewriteRule ^lab/(.*)$ lab/$1 [L]
+RewriteRule ^(.*).php$ $1.php [L]
+RewriteRule ^(.*)$ magic.php [L]

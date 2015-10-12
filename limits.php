@@ -1,7 +1,7 @@
 <?php
 
 function github($url) {
-  $url = "https://api.github.com/$url?access_token=7fcc884cd58afa4f9a1a4fe2a6777cb509e4581d";
+  $url = "https://api.github.com/$url?access_token=<<ACCESSTOKENHERE>>";
   //
   $context = stream_context_create(
     array('http'=>array(
